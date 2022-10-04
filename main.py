@@ -5,13 +5,30 @@
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+import argparse
 
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    parser = argparse.ArgumentParser(description="Process a list of integers", prog="calc")
+    subparsers = parser.add_subparsers(dest="command", required=True)
+
+    soma_parser = subparsers.add_parser('sum', help="Sum all integers")
+    mul_parser = subparsers.add_parser('mul', help="Multiply all integers")
+    max_parser = subparsers.add_parser('max', help="Returns the largest integer")
+
+    soma_parser.add_argument('integers', metavar='N', type=int, nargs='+', help='an integer for the accumulator')
+    mul_parser.add_argument('integers', metavar='N', type=int, nargs='+', help='an integer for the accumulator')
+    max_parser.add_argument('integers', metavar='N', type=int, nargs='+', help='an integer for the accumulator')
+
+    args = parser.parse_args()
+
+    if args.command == 'sum':
+        print(sum(args.integers))
+    elif args.command == 'max':
+        print(max(args.integers))
+    elif args.command == 'mul':
+        mul = 1
+        for i in args.integers:
+            mul *= i
+        print(mul)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
