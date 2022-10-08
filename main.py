@@ -6,29 +6,19 @@
 
 
 import argparse
+from create import init
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Process a list of integers", prog="calc")
+    parser = argparse.ArgumentParser(description="A command line utility to generate dummy data", prog="dtg")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    soma_parser = subparsers.add_parser('sum', help="Sum all integers")
-    mul_parser = subparsers.add_parser('mul', help="Multiply all integers")
-    max_parser = subparsers.add_parser('max', help="Returns the largest integer")
+    init_parser = subparsers.add_parser('init', help="Initialize a dtg repository")
 
-    soma_parser.add_argument('integers', metavar='N', type=int, nargs='+', help='an integer for the accumulator')
-    mul_parser.add_argument('integers', metavar='N', type=int, nargs='+', help='an integer for the accumulator')
-    max_parser.add_argument('integers', metavar='N', type=int, nargs='+', help='an integer for the accumulator')
+    # init_parser.add_argument('integers', metavar='N', type=int, nargs='+', help='an integer for the accumulator')
 
     args = parser.parse_args()
 
-    if args.command == 'sum':
-        print(sum(args.integers))
-    elif args.command == 'max':
-        print(max(args.integers))
-    elif args.command == 'mul':
-        mul = 1
-        for i in args.integers:
-            mul *= i
-        print(mul)
+    if args.command == 'init':
+        init()
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
