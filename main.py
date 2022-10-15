@@ -6,19 +6,35 @@
 
 
 import argparse
-from create import init
+
+from create import init, create
+from show import show
+
+CURRENT_VERSION = "1.0"
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="A command line utility to generate dummy data", prog="dtg")
-    subparsers = parser.add_subparsers(dest="command", required=True)
+    parser = argparse.ArgumentParser(description='A command line utility to generate dummy data', prog='dtg')
+    parser.add_argument('-v', '--version', help='Display the current version', action="store_true")
 
-    init_parser = subparsers.add_parser('init', help="Initialize a dtg repository")
+    subparsers = parser.add_subparsers(dest='command', help='command help')
 
-    # init_parser.add_argument('integers', metavar='N', type=int, nargs='+', help='an integer for the accumulator')
+    init_parser = subparsers.add_parser('init', help='Initialize a dtg repository')
+    init_parser.set_defaults(func=init)
+
+    show_parser = subparsers.add_parser('show', help='Show all dtg models created')
+    show_parser.set_defaults(func=show)
+
+    create_parser = subparsers.add_parser('create', help='Creates a new dtg model')
+    create_parser.add_argument('modelname', help='name of the model')
+    create_parser.set_defaults(func=create)
 
     args = parser.parse_args()
 
-    if args.command == 'init':
-        init()
+    if args.version:
+        print("dtg version %s" % CURRENT_VERSION)
+    else:
+        args.func(args)
+
+    exit(0)
 
 # See PyCharm help at https://www.jetbrains.com/help/pycharm/
