@@ -2,20 +2,20 @@ from json import dumps, load
 from os import mkdir, path
 
 from helpers.lists import ls_del_occ
-from helpers.valid import validate_modelname
+from helpers.valid import is_valid_modelname
 from helpers.ops import pack, unpack
-
-_INITIALIZED_: bool = path.exists('./.dtg/') and path.exists('./.dtg/models.dat') and path.exists('./.dtg/index.json')
-_SPLITER_ = '\x1a\xfe8\xc7\xd0|\xa3*\xb9\x97\xecb\xb3\xa8\r\t}\x85;\x9c\x81\xbdV\xb4\x92\xe9\x82\x98B\xa3+B'
+from globals.status import INITIALIZED
+from globals.assets import SPLITER
 
 
 def init(args) -> None:
-    global _INITIALIZED_
-
     try:
-        mkdir('./.dtg')
-        print("Initializing dtg models repository...")
-        _INITIALIZED_ = True
+        if not INITIALIZED:
+            mkdir('./.dtg')
+            print("Initializing dtg models repository...")
+        else:
+            print("Repository folder already exists")
+            exit(1)
     except FileExistsError:
         print("Repository folder already exists")
         exit(1)
@@ -31,8 +31,6 @@ def init(args) -> None:
             with open("./.dtg/index.json", "w") as fj:
                 fj.write(dumps({}, sort_keys=True, indent=4))
                 fj.close()
-
-            _INITIALIZED_ = True
             print("Done.")
             exit(0)
         else:
@@ -45,8 +43,8 @@ def init(args) -> None:
 
 
 def create(args) -> None:
-    if _INITIALIZED_:
-        if not validate_modelname(args.modelname.upper()):
+    if INITIALIZED:
+        if not is_valid_modelname(args.modelname.upper()):
             print('Invalid name for \'modelname\'')
             exit(1)
         else:
@@ -73,10 +71,10 @@ def create(args) -> None:
                     content = ''
 
                     if len(lines) != 0:
-                        for i in ls_del_occ(unpack(lines[0]).split(_SPLITER_), ''):
-                            content += i + _SPLITER_
+                        for i in ls_del_occ(unpack(lines[0]).split(SPLITER), ''):
+                            content += i + SPLITER
 
-                    content += '{}' + _SPLITER_
+                    content += '{}' + SPLITER
 
                     fb.seek(0)
                     fb.truncate()
