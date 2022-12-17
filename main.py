@@ -7,10 +7,11 @@
 
 import argparse
 
-from create import init, create
-from show import show
+from commands.create import init, create
+from commands.show import show
+from commands.add import add
+from globals.assets import CURRENT_VERSION
 
-CURRENT_VERSION = "1.0"
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='A command line utility to generate dummy data', prog='dtg')
@@ -27,6 +28,15 @@ if __name__ == '__main__':
     create_parser = subparsers.add_parser('create', help='Creates a new dtg model')
     create_parser.add_argument('modelname', help='name of the model')
     create_parser.set_defaults(func=create)
+
+    add_parser = subparsers.add_parser(
+        'add',
+        help='Add a field to a model',
+        description='Insert a new field into a model'
+    )
+    add_parser.add_argument('field', help='field')
+    add_parser.add_argument('modelname', help='modelname')
+    add_parser.set_defaults(func=add)
 
     args = parser.parse_args()
 

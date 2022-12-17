@@ -63,7 +63,7 @@ def create(args) -> None:
                     if len(models) == 0:
                         models[args.modelname.upper()] = 0
                     else:
-                        models[args.modelname.upper()] = models[list(models)[len(models) - 1]] + 1
+                        models[args.modelname.upper()] = len(models)
 
                     fj.write(dumps(models, sort_keys=True, indent=4))
                     fj.close()
