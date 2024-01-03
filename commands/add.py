@@ -13,6 +13,7 @@ def add(args) -> None:
         print('model \"%s\" does\'nt exists' % args.modelname)
         exit(1)
     elif not is_valid_field(args.field):
+        print('field bad format:\n\tusage - "--fields "var:(VALUE)""\n\t\tVALUE = int | string | double')
         exit(1)
     else:
         index = get_model_index(args.modelname, skip=False)
@@ -34,7 +35,7 @@ def add(args) -> None:
                         content[i] = content[i].split(';')
                         content[i].append(args.field)
                         content[i] = ls_del_occ(content[i], '')
-                        content[i] = '{' + ';'.join(content[i]) + '}'
+                        content[i] = '{' + ','.join(content[i]) + '}'
                     to_write += content[i] + SPLITER
 
             fb.seek(0)

@@ -2,7 +2,7 @@ from json import dumps, load
 from os import mkdir, path
 
 from helpers.lists import ls_del_occ
-from helpers.valid import is_valid_modelname
+from helpers.valid import is_valid_modelname, is_valid_field
 from helpers.ops import pack, unpack
 from globals.status import INITIALIZED
 from globals.assets import SPLITER
@@ -48,6 +48,10 @@ def create(args) -> None:
             print('Invalid name for \'modelname\'')
             exit(1)
         else:
+            if len(args.fields) != 0:
+                if not is_valid_field(args.fields):
+                    print('field bad format:\n\tusage - "--fields "var:(VALUE)""\n\t\tVALUE = int | string | double')
+                    exit(1)
             try:
                 with open("./.dtg/index.json", "r+") as fj:
                     models = load(fj)
@@ -74,7 +78,7 @@ def create(args) -> None:
                         for i in ls_del_occ(unpack(lines[0]).split(SPLITER), ''):
                             content += i + SPLITER
 
-                    content += '{}' + SPLITER
+                    content += '{%s}' % (args.fields) + SPLITER
 
                     fb.seek(0)
                     fb.truncate()

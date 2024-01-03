@@ -27,6 +27,7 @@ if __name__ == '__main__':
 
     create_parser = subparsers.add_parser('create', help='Creates a new dtg model')
     create_parser.add_argument('modelname', help='name of the model')
+    create_parser.add_argument('--fields', default='', type=str, help='fields of the model')
     create_parser.set_defaults(func=create)
 
     add_parser = subparsers.add_parser(
