@@ -39,7 +39,6 @@ def init(args) -> None:
     except IOError:
         print("Something went wrong, ups 🤦🏽")
         exit(1)
-    exit(0)
 
 
 def create(args) -> None:

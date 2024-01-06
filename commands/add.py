@@ -5,9 +5,6 @@ from helpers.ops import pack, unpack
 from helpers.lists import ls_del_occ
 
 
-USAGE = 'usage: dtg add <FIELD> <MODELNAME>'
-
-
 def add(args) -> None:
     if not model_exists(args.modelname):
         print('model \"%s\" does\'nt exists' % args.modelname)
