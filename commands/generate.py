@@ -1,5 +1,7 @@
-from helpers.ops import unpack
 from faker import Faker
+from json import dumps
+
+from helpers.ops import unpack
 from globals.assets import MODELS_BIN_FILE, SPLITER
 from helpers.lists import ls_del_occ
 from helpers.model import get_model_index
@@ -14,6 +16,7 @@ def generate(args):
         exit(1)
     else:
         model_as_dict = extract_model(args.modelname)
+        rows = []
 
         if len(model_as_dict) == 0:
             print("program error Extract")
@@ -23,7 +26,33 @@ def generate(args):
             for field in model_as_dict:
                 model_as_dict[field] = get_data_by_field(field)
 
-            print(model_as_dict)
+            rows.append(model_as_dict.copy())
+        
+        if args.output == 'stdout':
+            for row in rows:
+                print(row)
+        else:
+            try:
+                output_filename = './'
+                output_data = {}
+
+                if args.output.endswith('.json'):
+                    output_filename += args.output
+                else:
+                    output_filename += args.output + '.json'
+
+                with open(output_filename, "w+") as f:
+                    for i in range(len(rows)):
+                        output_data[i] = rows[i]
+
+                    f.write(dumps(output_data, sort_keys=True, indent=4))
+                    f.close()
+            except PermissionError:
+                print('Apparently you don\'t have permission, try with sudo')
+                exit(1)
+            except IOError:
+                print("Something went wrong, ups 🤦🏽")
+                exit(1)
 
     exit(0)
 
