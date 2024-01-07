@@ -38,6 +38,5 @@ def add(args) -> None:
             fb.seek(0)
             fb.truncate()
             fb.write(pack(to_write))
-            fb.close()
 
         print('%s +=> %s' % (args.field, args.modelname))

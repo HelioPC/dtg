@@ -26,11 +26,10 @@ def init(args) -> None:
     try:
         if path.exists('./.dtg/'):
             with open("./.dtg/models.dat", "w+b") as fb:
-                fb.close()
+                pass
 
             with open("./.dtg/index.json", "w") as fj:
                 fj.write(dumps({}, sort_keys=True, indent=4))
-                fj.close()
             print("Done.")
             exit(0)
         else:
@@ -67,7 +66,6 @@ def create(args) -> None:
                         models[args.modelname.upper()] = len(models)
 
                     fj.write(dumps(models, sort_keys=True, indent=4))
-                    fj.close()
 
                 with open("./.dtg/models.dat", "rb+") as fb:
                     lines = fb.readlines()
@@ -82,7 +80,6 @@ def create(args) -> None:
                     fb.seek(0)
                     fb.truncate()
                     fb.write(pack(content))
-                    fb.close()
 
                 print("\"%s\" model created" % args.modelname)
                 exit(0)

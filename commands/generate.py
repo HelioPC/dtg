@@ -46,7 +46,6 @@ def generate(args):
                         output_data[i] = rows[i]
 
                     f.write(dumps(output_data, sort_keys=True, indent=4))
-                    f.close()
             except PermissionError:
                 print('Apparently you don\'t have permission, try with sudo')
                 exit(1)
