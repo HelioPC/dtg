@@ -2,7 +2,7 @@ from json import dumps, load
 from os import mkdir, path
 
 from helpers.lists import ls_del_occ
-from helpers.valid import is_valid_modelname
+from helpers.valid import is_valid_modelname, is_valid_field
 from helpers.ops import pack, unpack
 from globals.status import INITIALIZED
 from globals.assets import SPLITER
@@ -26,11 +26,10 @@ def init(args) -> None:
     try:
         if path.exists('./.dtg/'):
             with open("./.dtg/models.dat", "w+b") as fb:
-                fb.close()
+                pass
 
             with open("./.dtg/index.json", "w") as fj:
                 fj.write(dumps({}, sort_keys=True, indent=4))
-                fj.close()
             print("Done.")
             exit(0)
         else:
@@ -39,7 +38,6 @@ def init(args) -> None:
     except IOError:
         print("Something went wrong, ups 🤦🏽")
         exit(1)
-    exit(0)
 
 
 def create(args) -> None:
@@ -48,6 +46,10 @@ def create(args) -> None:
             print('Invalid name for \'modelname\'')
             exit(1)
         else:
+            if len(args.fields) != 0:
+                if not is_valid_field(args.fields):
+                    print('field bad format:\n\tusage - "--fields "var:(VALUE)""\n\t\tVALUE = int | string | double')
+                    exit(1)
             try:
                 with open("./.dtg/index.json", "r+") as fj:
                     models = load(fj)
@@ -64,22 +66,20 @@ def create(args) -> None:
                         models[args.modelname.upper()] = len(models)
 
                     fj.write(dumps(models, sort_keys=True, indent=4))
-                    fj.close()
 
                 with open("./.dtg/models.dat", "rb+") as fb:
-                    lines = fb.readlines()
+                    line = fb.read()
                     content = ''
 
-                    if len(lines) != 0:
-                        for i in ls_del_occ(unpack(lines[0]).split(SPLITER), ''):
+                    if len(unpack(line)) != 0:
+                        for i in ls_del_occ(unpack(line).split(SPLITER), ''):
                             content += i + SPLITER
 
-                    content += '{}' + SPLITER
+                    content += '{%s}' % (args.fields) + SPLITER
 
                     fb.seek(0)
                     fb.truncate()
                     fb.write(pack(content))
-                    fb.close()
 
                 print("\"%s\" model created" % args.modelname)
                 exit(0)

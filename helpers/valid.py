@@ -1,4 +1,5 @@
 from string import whitespace, ascii_uppercase, punctuation
+from re import match
 
 
 TYPES = ['string', 'int', 'char', 'number', 'bool', 'date', 'name']
@@ -27,17 +28,7 @@ def is_valid_modelname(modelname: str) -> bool:
 
 
 def is_valid_field(field: str) -> bool:
-    if field.count(':') != 1:
-        print('wrong format for field: \"<fieldName:type>\"')
-        return False
+    pattern = r"^[a-zA-Z]{2,}:(int|string|double|bool)(,[a-zA-Z]{2,}:(int|string|double|bool))*$"
+    is_match = match(pattern, field)
 
-    name, _type = field.split(':')
-
-    if not is_valid_modelname(name.upper()):
-        print('invalid field name: \"%s\"' % name)
-        return False
-    elif _type not in TYPES:
-        print('field type not in: ', TYPES)
-        return False
-    else:
-        return True
+    return is_match is not None

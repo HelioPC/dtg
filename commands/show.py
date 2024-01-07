@@ -7,8 +7,12 @@ from globals.assets import SPLITER
 def show(args):
     if INITIALIZED:
         with open('./.dtg/models.dat', 'rb') as fb:
-            lines = fb.readlines()
-            print(ls_del_occ(unpack(lines[0]).split(SPLITER), ''))
+            line = fb.read()
+            
+            if len(unpack(line)) == 0:
+                print("no models created")
+            else:
+                print(ls_del_occ(unpack(line).split(SPLITER), ''))
         exit(0)
     else:
         print("dtg folder not found")

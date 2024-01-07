@@ -8,6 +8,7 @@
 import argparse
 
 from commands.create import init, create
+from commands.generate import generate
 from commands.show import show
 from commands.add import add
 from globals.assets import CURRENT_VERSION
@@ -27,6 +28,7 @@ if __name__ == '__main__':
 
     create_parser = subparsers.add_parser('create', help='Creates a new dtg model')
     create_parser.add_argument('modelname', help='name of the model')
+    create_parser.add_argument('--fields', default='', type=str, help='fields of the model')
     create_parser.set_defaults(func=create)
 
     add_parser = subparsers.add_parser(
@@ -37,6 +39,26 @@ if __name__ == '__main__':
     add_parser.add_argument('field', help='field')
     add_parser.add_argument('modelname', help='modelname')
     add_parser.set_defaults(func=add)
+
+    generate_parser = subparsers.add_parser(
+        'generate',
+        help='Generate the dummy',
+        description='Generate the dummy data based on a model'
+    )
+    generate_parser.add_argument('modelname', help='modelname')
+    generate_parser.add_argument(
+        '-c', '--count', default=1, type=int,
+        help='number of records to generate'
+    )
+    generate_parser.add_argument(
+        '-o', '--output', default='stdout', type=str,
+        help='output file'
+    )
+    generate_parser.add_argument(
+        '-k', '--keep', default=False, action='store_true',
+        help='keep the generated data in the repository'
+    )
+    generate_parser.set_defaults(func=generate)
 
     args = parser.parse_args()
 

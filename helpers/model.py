@@ -14,11 +14,11 @@ def model_exists(model: str) -> bool:
             models = load(fj)
 
             with open(MODELS_BIN_FILE, "rb+") as fb:
-                lines = fb.readlines()
+                line = fb.read()
 
                 return (
                         model.upper() in models and
-                        len(ls_del_occ(unpack(lines[0]).split(SPLITER), '')) == len(models)
+                        len(ls_del_occ(unpack(line).split(SPLITER), '')) == len(models)
                 )
 
 
