@@ -1,13 +1,13 @@
 from difflib import SequenceMatcher
-from zlib import compress, decompress, Z_BEST_COMPRESSION
+from zlib import compress, decompressobj, Z_BEST_COMPRESSION, MAX_WBITS
 
 
 def pack(data: str) -> bytes:
-    return compress(data.encode(), Z_BEST_COMPRESSION)
+    return compress(data.encode('utf-8'), Z_BEST_COMPRESSION)
 
 
 def unpack(data: bytes) -> str:
-    return decompress(data).decode('utf-8')
+    return decompressobj().decompress(data).decode('utf-8')
 
 def most_similar(target: str, names: list[str]) -> str:
     max_similarity = 0

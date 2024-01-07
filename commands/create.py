@@ -68,11 +68,11 @@ def create(args) -> None:
                     fj.write(dumps(models, sort_keys=True, indent=4))
 
                 with open("./.dtg/models.dat", "rb+") as fb:
-                    lines = fb.readlines()
+                    line = fb.read()
                     content = ''
 
-                    if len(lines) != 0:
-                        for i in ls_del_occ(unpack(lines[0]).split(SPLITER), ''):
+                    if len(unpack(line)) != 0:
+                        for i in ls_del_occ(unpack(line).split(SPLITER), ''):
                             content += i + SPLITER
 
                     content += '{%s}' % (args.fields) + SPLITER

@@ -66,10 +66,10 @@ def extract_model(modelname: str) -> dict:
     model_as_dict = {}
 
     with open(MODELS_BIN_FILE, "rb+") as fb:
-        lines = fb.readlines()
-        content = ls_del_occ(unpack(lines[0]).split(SPLITER), "")
+        line = fb.read()
+        content = ls_del_occ(unpack(line).split(SPLITER), "")
 
-        if len(lines) != 0:
+        if len(unpack(line)) != 0:
             for i in range(len(content)):
                 if i == model_index:
                     content[i] = content[i].removeprefix("{")
