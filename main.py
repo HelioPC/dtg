@@ -6,6 +6,7 @@
 
 
 import argparse
+from sys import exit
 
 from commands.create import init, create
 from commands.generate import generate

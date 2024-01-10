@@ -1,5 +1,6 @@
 from faker import Faker
 from json import dumps
+from sys import exit
 
 from helpers.ops import unpack
 from globals.assets import MODELS_BIN_FILE, SPLITER
