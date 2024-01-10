@@ -21,12 +21,14 @@ def generate(args):
         if len(model_as_dict) == 0:
             print("program error Extract")
             exit(1)
+        
+        results_as_dict = model_as_dict.copy()
 
         for _ in range(args.count):
             for field in model_as_dict:
-                model_as_dict[field] = get_data_by_field(field)
+                results_as_dict[field] = get_data_by_field(field, fieldtype=model_as_dict[field], force=args.force)
 
-            rows.append(model_as_dict.copy())
+            rows.append(results_as_dict.copy())
         
         if args.output == 'stdout':
             for row in rows:
@@ -67,45 +69,54 @@ def extract_model(modelname: str) -> dict:
 
     with open(MODELS_BIN_FILE, "rb+") as fb:
         line = fb.read()
-        content = ls_del_occ(unpack(line).split(SPLITER), "")
+        content = ls_del_occ(unpack(line).split(SPLITER), '')
 
         if len(unpack(line)) != 0:
             for i in range(len(content)):
                 if i == model_index:
-                    content[i] = content[i].removeprefix("{")
-                    content[i] = content[i].removesuffix("}")
+                    content[i] = content[i].removeprefix('{')
+                    content[i] = content[i].removesuffix('}')
 
-                    for field in content[i].split(","):
-                        field = field.split(":")
+                    for field in content[i].split(','):
+                        field = field.split(':')
                         model_as_dict[field[0]] = field[1]
 
     return model_as_dict
 
 
-def get_data_by_field(fieldname: str) -> str:
+def get_data_by_field(fieldname: str, fieldtype: str='', force: bool=False) -> str:
+    if fieldname == '' or fieldtype == '':
+        print("Invalid field")
+        exit(1)
+
     fake = Faker()
+    field_generators = {
+        "name": fake.name,
+        "age": lambda: fake.random_int(min=1, max=100),
+        "address": fake.address,
+        "city": fake.city,
+        "country": fake.country,
+        "email": fake.email,
+        "phone": fake.phone_number,
+        "company": fake.company,
+        "job": fake.job,
+        "date": fake.date,
+    }
 
-    refined_fieldname = most_similar(fieldname.lower(), TYPES_OF_FIELDS)
+    field_similarity = most_similar(fieldname.lower(), TYPES_OF_FIELDS)
+    refined_fieldname = field_similarity[0]
+    similarity_value = field_similarity[1]
 
-    if refined_fieldname == "name":
-        return fake.name()
-    elif refined_fieldname == "age":
-        return fake.random_int(min=1, max=100)
-    elif refined_fieldname == "address":
-        return fake.address()
-    elif refined_fieldname == "city":
-        return fake.city()
-    elif refined_fieldname == "country":
-        return fake.country()
-    elif refined_fieldname == "email":
-        return fake.email()
-    elif refined_fieldname == "phone":
-        return fake.phone_number()
-    elif refined_fieldname == "company":
-        return fake.company()
-    elif refined_fieldname == "job":
-        return fake.job()
-    elif refined_fieldname == "date":
-        return fake.date()
-    else:
+    if similarity_value >= 0.7 and refined_fieldname in field_generators:
+        return field_generators[refined_fieldname]()
+    elif not force:
         return fake.text()
+
+    if fieldtype == "bool":
+        return fake.boolean()
+    elif fieldtype == "int":
+        return fake.random_int(min=0, max=1000000000)
+    elif fieldtype == "double":
+        return fake.pyfloat(right_digits=2, positive=True)
+    else:
+        return fake.text(max_nb_chars=50)

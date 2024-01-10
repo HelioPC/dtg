@@ -55,6 +55,10 @@ if __name__ == '__main__':
         help='output file'
     )
     generate_parser.add_argument(
+        '-f', '--force', default=False, action='store_true',
+        help='force the use of the fields types'
+    )
+    generate_parser.add_argument(
         '-k', '--keep', default=False, action='store_true',
         help='keep the generated data in the repository'
     )

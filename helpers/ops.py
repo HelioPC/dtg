@@ -9,7 +9,7 @@ def pack(data: str) -> bytes:
 def unpack(data: bytes) -> str:
     return decompressobj().decompress(data).decode('utf-8')
 
-def most_similar(target: str, names: list[str]) -> str:
+def most_similar(target: str, names: list[str]) -> tuple[str, float]:
     max_similarity = 0
     most_similar_name = ''
 
@@ -19,7 +19,7 @@ def most_similar(target: str, names: list[str]) -> str:
             max_similarity = similarity
             most_similar_name = name
 
-    return most_similar_name
+    return most_similar_name, max_similarity
 
 def similar_names(name_1: str, name_2: str) -> float:
-    return SequenceMatcher(None, name_1, name_2).ratio() * 100
+    return SequenceMatcher(None, name_1, name_2).ratio()
