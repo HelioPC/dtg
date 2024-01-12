@@ -8,7 +8,7 @@ from helpers.lists import ls_del_occ
 from helpers.model import get_model_index
 from helpers.valid import is_valid_modelname
 from helpers.ops import most_similar
-from globals.assets import TYPES_OF_FIELDS
+from globals.assets import TYPES_OF_FIELDS, LOCALES
 
 
 def generate(args):
@@ -27,7 +27,7 @@ def generate(args):
 
         for _ in range(args.count):
             for field in model_as_dict:
-                results_as_dict[field] = get_data_by_field(field, fieldtype=model_as_dict[field], force=args.force)
+                results_as_dict[field] = get_data_by_field(field, fieldtype=model_as_dict[field], force=args.force, langs=args.lang)
 
             rows.append(results_as_dict.copy())
         
@@ -85,23 +85,28 @@ def extract_model(modelname: str) -> dict:
     return model_as_dict
 
 
-def get_data_by_field(fieldname: str, fieldtype: str='', force: bool=False) -> str:
+def get_data_by_field(fieldname: str, fieldtype: str='', force: bool=False, langs: list[str]=['pt_PT', 'en_US']) -> str:
     if fieldname == '' or fieldtype == '':
-        print("Invalid field")
+        print('Invalid field')
         exit(1)
+    
+    for lang in langs:
+        if lang not in LOCALES:
+            print('Invalid language\nAvailable languages: %s' % LOCALES)
+            exit(1)
 
-    fake = Faker()
+    fake = Faker(locale=langs)
     field_generators = {
-        "name": fake.name,
-        "age": lambda: fake.random_int(min=1, max=100),
-        "address": fake.address,
-        "city": fake.city,
-        "country": fake.country,
-        "email": fake.email,
-        "phone": fake.phone_number,
-        "company": fake.company,
-        "job": fake.job,
-        "date": fake.date,
+        'name': fake.name,
+        'age': lambda: fake.random_int(min=1, max=100),
+        'address': fake.address,
+        'city': fake.city,
+        'country': fake.country,
+        'email': fake.email,
+        'phone': fake.phone_number,
+        'company': fake.company,
+        'job': fake.job,
+        'date': fake.date,
     }
 
     field_similarity = most_similar(fieldname.lower(), TYPES_OF_FIELDS)
@@ -113,11 +118,11 @@ def get_data_by_field(fieldname: str, fieldtype: str='', force: bool=False) -> s
     elif not force:
         return fake.text()
 
-    if fieldtype == "bool":
+    if fieldtype == 'bool':
         return fake.boolean()
-    elif fieldtype == "int":
+    elif fieldtype == 'int':
         return fake.random_int(min=0, max=1000000000)
-    elif fieldtype == "double":
+    elif fieldtype == 'double':
         return fake.pyfloat(right_digits=2, positive=True)
     else:
         return fake.text(max_nb_chars=50)

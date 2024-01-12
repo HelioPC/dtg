@@ -60,6 +60,10 @@ if __name__ == '__main__':
         help='force the use of the fields types'
     )
     generate_parser.add_argument(
+        '-l', '--lang', default=['pt_PT', 'en_US'], nargs='+',
+        help='languages to use'
+    )
+    generate_parser.add_argument(
         '-k', '--keep', default=False, action='store_true',
         help='keep the generated data in the repository'
     )
