@@ -1,3 +1,5 @@
+from sys import exit
+
 from helpers.valid import is_valid_field
 from helpers.model import model_exists, get_model_index
 from globals.assets import MODELS_BIN_FILE, SPLITER

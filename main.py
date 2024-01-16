@@ -6,6 +6,7 @@
 
 
 import argparse
+from sys import exit
 
 from commands.create import init, create
 from commands.generate import generate
@@ -53,6 +54,14 @@ if __name__ == '__main__':
     generate_parser.add_argument(
         '-o', '--output', default='stdout', type=str,
         help='output file'
+    )
+    generate_parser.add_argument(
+        '-f', '--force', default=False, action='store_true',
+        help='force the use of the fields types'
+    )
+    generate_parser.add_argument(
+        '-l', '--lang', default=['pt_PT', 'en_US'], nargs='+',
+        help='languages to use'
     )
     generate_parser.add_argument(
         '-k', '--keep', default=False, action='store_true',

@@ -1,3 +1,5 @@
+from sys import exit
+
 from commands.create import INITIALIZED
 from helpers.ops import unpack
 from helpers.lists import ls_del_occ
