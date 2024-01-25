@@ -17,6 +17,8 @@ def init(args) -> None:
         else:
             print("Repository folder already exists")
             exit(1)
+        
+        mkdir('./.dtg/.keep')
     except FileExistsError:
         print("Repository folder already exists")
         exit(1)
@@ -31,6 +33,10 @@ def init(args) -> None:
 
             with open("./.dtg/index.json", "w") as fj:
                 fj.write(dumps({}, sort_keys=True, indent=4))
+
+            with open("./.dtg/.keep/data.json", "w") as fj:
+                fj.write(dumps({}, sort_keys=True, indent=4))
+
             print("Done.")
             exit(0)
         else:

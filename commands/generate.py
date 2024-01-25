@@ -1,5 +1,7 @@
+from typing import Any
 from faker import Faker
-from json import dumps
+from json import dumps, load
+from os import mkdir, path
 from sys import exit
 
 from helpers.ops import unpack
@@ -30,6 +32,11 @@ def generate(args):
                 results_as_dict[field] = get_data_by_field(field, fieldtype=model_as_dict[field], force=args.force, langs=args.lang)
 
             rows.append(results_as_dict.copy())
+        
+        if args.keep:
+            for row in rows:
+                for field in row:
+                    store_generated_data(row[field], field)
         
         if args.output == 'stdout':
             for row in rows:
@@ -126,3 +133,20 @@ def get_data_by_field(fieldname: str, fieldtype: str='', force: bool=False, lang
         return fake.pyfloat(right_digits=2, positive=True)
     else:
         return fake.text(max_nb_chars=50)
+
+def store_generated_data(data: Any, fieldname: str) -> None:
+    if path.exists('./.dtg/.keep/data.json'):
+        with open("./.dtg/.keep/data.json", "r+") as fj:
+            fields = load(fj)
+
+            if fieldname not in fields:
+                fields[fieldname] = [data]
+            else:
+                fields[fieldname].append(data)
+
+            fj.seek(0)
+            fj.truncate()
+            fj.write(dumps(fields, sort_keys=True, indent=4, ensure_ascii=False))
+    else:
+        print('File to save data not found')
+        exit(1)
